@@ -2,8 +2,34 @@ var mongoose = require('mongoose');
 var router = require('express').Router();
 var User = require('../models/User');
 
-router.get('/users/test', function(req, res) {
-    res.send('/users works!');
+router.get('/users', function(req, res) {
+    if (!req.body.id && !req.body.username) {
+        res.sendStatus(400);
+    }
+
+    if (req.body.id) {
+        User.findById(req.body.id, function(err, user) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+            if (!user) {
+                return res.sendStatus(404);
+            }
+            return res.json(user.toGetJSON());
+        });
+    }
+
+    if (req.body.username) {
+        User.findOne({username: req.body.username}, function(err, user) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+            if (!user) {
+               return res.sendStatus(404);
+            }
+           return res.json(user.toGetJSON());
+        });
+    }
 });
 
 router.post('/users', function(req, res) {
@@ -13,9 +39,9 @@ router.post('/users', function(req, res) {
 
     user.save(function(err) {
         if (err) {
-            res.send('problem creating user!');
+            return res.sendStatus(500);
         } else {
-            res.sendStatus(201);
+           return res.status(201).json(user.toGetJSON());
         }
     });
 });

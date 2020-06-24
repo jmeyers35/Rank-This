@@ -12,7 +12,9 @@ app.use(express.json());
 app.use(require('morgan')('dev'));
 
 userRouter = require('./routes/users');
+chartRouter = require('./routes/charts');
 app.use(userRouter);
+app.use(chartRouter);
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })

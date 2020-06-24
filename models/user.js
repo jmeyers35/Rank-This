@@ -3,8 +3,9 @@ var bcrypt = require('bcrypt');
 SALT_WORK_FACTOR = 10;
 
 var userSchema = new mongoose.Schema({
-    username: String,
+    username: { type: String, unique: true },
     password: String,
+    charts: [{type: mongoose.Schema.Types.ObjectId, ref: 'Chart'}]
 });
 
 userSchema.pre('save', function(next) {
@@ -34,6 +35,14 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
         }
         cb(null, isMatch);
     });
+};
+
+userSchema.methods.toGetJSON = function() {
+    return {
+        id: this._id,
+        username: this.username,
+        charts: this.charts
+    };
 };
 
 module.exports = mongoose.model('User', userSchema)
