@@ -28,28 +28,19 @@ router.get("/charts/:id", function(req, res) {
 });
 
 router.post("/charts", function(req, res) {
-    User.findById(req.body.createdBy, function(err, user) {
-        console.log(`Id looked up: ${req.body.createdBy}`);
+    var chart = new Chart();
+    chart.title = req.body.title;
+    chart.description = req.body.description;
+    chart.criteria = req.body.criteria;
+    chart.items = req.body.items;
+    chart.createdBy = req.user;
+    chart.save(function(err) {
         if (err) {
             return res.sendStatus(500);
         }
-        if (!user) {
-            return res.sendStatus(401);
-        }
-        var chart = new Chart();
-        chart.title = req.body.title;
-        chart.description = req.body.description;
-        chart.criteria = req.body.criteria;
-        chart.items = req.body.items;
-        chart.createdBy = user;
-        chart.save(function(err) {
-            if (err) {
-                return res.sendStatus(500);
-            }
-            return res.status(201).json(chart.toJSON());
-        });
-        
+        return res.status(201).json(chart.toJSON());
     });
+    
 });
 
 module.exports = router;
