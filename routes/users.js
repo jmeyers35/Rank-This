@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var router = require('express').Router();
+var passport = require('passport');
 var User = require('../models/User');
 
 router.get('/users', function(req, res) {
@@ -44,6 +45,10 @@ router.post('/users', function(req, res) {
            return res.status(201).json(user.toGetJSON());
         }
     });
+});
+
+router.post('/users/login', passport.authenticate('local', { session: false }), function(req, res) {
+    res.status(200).json(req.user);
 });
 
 module.exports = router;
