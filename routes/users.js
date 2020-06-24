@@ -47,7 +47,7 @@ router.post('/users', function(req, res) {
     });
 });
 
-router.post('/users/login', passport.authenticate('local', { session: false }), function(req, res) {
+router.post('/users/login', passport.authenticate('local'), function(req, res) {
     res.status(200).json(req.user);
 });
 
